@@ -64,56 +64,41 @@ const { Thoughts } = require('../models');
   }
 };
 
-
-// const postReaction= async (req, res) => {
-//   const { ReactionText, createdAt, username, reactions } = req.body;
-//   try {
-//     const reaction = await Reactions.create({
-//       ReactionText,
-//       createdAt,
-//       username,
-//       reactions,
-//     });
-//     res.status(201).json({ reaction });
-//   } catch (error) {
-//     res.status(500).send('Server error');
-//   }
-// };
-
-  // addReaction(req, res) {
-  //   Application.findOneAndUpdate(
-  //     { _id: req.params.applicationId },
-  //     { $addToSet: { reactions: req.body } },
-  //     { runValidators: true, new: true }
-  //   )
-  //     .then((application) =>
-  //       !application
-  //         ? res.status(404).json({ message: 'No application with this id!' })
-  //         : res.json(application)
-  //     )
-  //     .catch((err) => res.status(500).json(err));
-  // };
-  // // Remove application reaction. This method finds the application based on ID. It then updates the reactions array associated with the app in question by removing it's reactionId from the reactions array.
-  // removeReaction(req, res) {
-  //   Thoughts.findOneAndUpdate(
-  //     { _id: req.params.thoughtId },
-  //     { $pull: { reactions: { reactionId: req.params.reactionId } } },
-  //     { runValidators: true, new: true }
-  //   )
-  //     .then((thought) =>
-  //       !thought
-  //         ? res.status(404).json({ message: 'No thought with this id!' })
-  //         : res.json(thought)
-  //     )
-  //     .catch((err) => res.status(500).json(err));
-  // };
-
+const addThoughtReaction = async (req, res) => {
+  Thoughts.findOneAndUpdate(
+    { _id: req.params.id },
+    { $addToSet: { reactions: req.body } },
+    { runValidators: true, new: true }
+  )
+    .then((thought) =>
+      !thought
+        ? res.status(404).json({ message: 'No thought with this id!' })
+        : res.json(thought)
+    )
+    .catch((err) => res.status(500).json(err));
+};
+// Remove thought reaction
+const removeThoughtReaction = async (req, res) => {
+  Thoughts.findOneAndUpdate(
+    { _id: req.params.id},
+    { $pull: { reactions: { reactionId: req.params.reactionId } } },
+    { runValidators: true, new: true }
+  )
+    .then((thought) =>
+      !thought
+        ? res.status(404).json({ message: 'No thought with this id!' })
+        : res.json(thought)
+    )
+    .catch((err) => res.status(500).json(err));
+};
 
 module.exports = {
   getThoughts,
   getThoughtbyId,
   postThought,
   deleteThought,
-  putThought
+  putThought,
+  addThoughtReaction,
+  removeThoughtReaction
  };
 
